@@ -3,7 +3,6 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: front-end
-  namespace: default
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
