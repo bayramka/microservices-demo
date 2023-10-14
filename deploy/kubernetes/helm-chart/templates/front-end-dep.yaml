@@ -14,8 +14,8 @@ spec:
         name: front-end
       annotations:
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "devweb-app"
-        vault.hashicorp.com/agent-inject-secret-credentials.txt: "secret/data/devwebapp/config"
+        vault.hashicorp.com/role: "front-end"
+        vault.hashicorp.com/agent-inject-secret-credentials.txt: "secret/data/front-end/config"
     spec:
       serviceAccountName: internal-app
       containers:
