@@ -12,13 +12,10 @@ spec:
     metadata:
       labels:
         name: front-end
-      {{- if .Values.istio.enabled }}
       annotations:
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "devweb-app"
         vault.hashicorp.com/agent-inject-secret-credentials.txt: "secret/data/devwebapp/config"
-      {{- end }}
     spec:
       containers:
       - name: front-end
