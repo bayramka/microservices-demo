@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "kloia-challenge",
+    "private_key_id": "22d31ed46844b43536d5bdd2d8c2ca98fcaf562c",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCVbXRPkR9UiFVq\nOCK6jn97CUhX3wc+JGVO516g50OfXVVqvYPSd2PIfMdh7vGVIygFX2DvY78q8VZY\ni0lzikVVfez2qnGMlpW6M7m5Un6LgBntnV6raVzZTV8AHGgymtduHgR6jKReAvD/\nRJrPUVUGxa/eJN4EIgD5xtV4kyNRenmgt7tOzZOegCEcNmAQYC4bAFlk9VVZItJg\nTfHrGaHDiPOR6V3EenZb/PxJky0Oc7KU6G8DlrH0ZEdIGArggbvU//nK+n9pl4r0\nBzuQj8x8sbXlxvHEXJWwXvGWo8pffm4eFgNymmd2L8lHHFH604K6yVR4vP3tq5fi\nqZJkeZOvAgMBAAECggEAAZbVatc3RxXgGq4YKHXFg1B49X5IvG90qF8rkXiELpi2\nhNkZIs7kP8ib8j2xUg26qjv2cvVTnihM68oncNQioqMhNwpfBMjBNObB7eejsuYc\n4HsQ+6+2LhV1kjG7Jfahnekx0P/X66wKVhyrrNLHnbfShAFOXyrhacaklJC0CnTH\n1zghXEfD+b9s6R2woPrK3aMpTz5GtrzXWtNI3EaKvpDyxKDbT6R8Fr4pXPHLWuXr\no/2eEu3qrW3yBklZ538HHkTrhfXEZCRxK8bH78lj7PEgoTTltt3jdbfGq2fcNayX\nYaxkEtwUZs4fUfnsHSohGGddFDlM/qZvEUsSOkQE+QKBgQDGqd3BvygxNr2yimoY\nHCdLhfxO89w0iwOw8MeQcJNWShmZJJcepZp4RDW8cjLpUM4V2JcsOIHwSYBLNSIM\nMTv9CU7SAe1GhJFMbDJYGDW22di5uOoR7Skmd9ZhtH7mInjy1toAeHaDEYCZ1tPq\nH6sPKM8Op1Ro3582FV5x1DCFLQKBgQDAjdFQdSetgsqjQpxCkOZNTh6BS2tqoAG2\nrVygFEVHBvQwWCgH2BA0vDtGC9cn8JlLOu/n30kOTbzipV74ISgi9NBzfaaeqq/Q\n/5XR/8LeDbWD8wFD1GiSQf8Ny+mIOFHbaRvIfHijyvcgtfqB5tJpFyJ/RDr1TW6N\nPgACUn19ywKBgQCYz9LnFE4rROs36aZgM0+6lS6V4JiSxhepxBwNq7p5lngIR5AC\nn+mo9vbKpKEqvOA5B6iI+FJi7XbE4vL0o+573ewGODs2kgRd35/+CWlP5FQD0Awk\ni+OqVmXONBOknAGi8ccws3idqxnbu9a38XIYMBDNOcMBBHooFNnX/xrvZQKBgQCz\nRtctjAaHPBEi9C+8omBqdWNdijTWr2cpCDwHJxhhSw4rvMh4lShxkRe23etS2mY/\nbv5S6seAM8y7ULEdYPGXqkwyWzi43b6YXn7FaNWsHSN1WNlCqA88rYmk9MfX9mfw\nWuptPcas6ZoxsH0uWRRqmAmcaJBkN9XIV4N2pgsFBQKBgAkcUIcXvZDsz18FV3CH\nNOY7t7CrKT+JbJxp6/YgyarNL3/pfv7zlbpKnntFz2LgnedpjHDVbZZKyGBEP4gH\ntQ3Zc6Do9Fk7pfdffKkRDFpTP4SabaYz/H95MwDvqAuoUaWuj3fJVVGJ5SSwoMbZ\n/kV7LXVWoV8AA2zki2cl0ton\n-----END PRIVATE KEY-----\n",
+    "client_email": "test-165@kloia-challenge.iam.gserviceaccount.com",
+    "client_id": "115392136584156204733",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-165%40kloia-challenge.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }
+  

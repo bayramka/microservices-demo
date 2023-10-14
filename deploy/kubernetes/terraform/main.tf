@@ -1,136 +1,95 @@
-provider "aws" {
-  region = "${var.aws_region}"
+# google_client_config and kubernetes provider must be explicitly specified like the following.
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  host                   = "https://${module.gke.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+  # version                = "~> 2.10"
 }
 
-resource "aws_security_group" "k8s-security-group" {
-  name        = "md-k8s-security-group"
-  description = "allow all internal traffic, ssh, http from anywhere"
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = "true"
-  }
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 9411
-    to_port     = 9411
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 30001
-    to_port     = 30001
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 30002
-    to_port     = 30002
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-   from_port   = 31601
-   to_port     = 31601
-   protocol    = "tcp"
-   cidr_blocks = ["0.0.0.0/0"]
- }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+module "gke" {
+  source                     = "terraform-google-modules/kubernetes-engine/google"
+  version                    = "26.1.1"
+  project_id                 = var.project_id
+  name                       = "${var.cluster_name}-${var.env_name}"
+  regional                   = true
+  region                     = var.region
+  zones                      = var.zones
+  network                    = module.gcp-network.network_name
+  subnetwork                 = module.gcp-network.subnets_names[0]
+  ip_range_pods              = var.ip_range_pods_name
+  ip_range_services          = var.ip_range_services_name
+  http_load_balancing        = false
+  network_policy             = false
+  horizontal_pod_autoscaling = false
+  filestore_csi_driver       = false
+  create_service_account     = false
+  logging_service            = "logging.googleapis.com/kubernetes"
 
-resource "aws_instance" "ci-sockshop-k8s-master" {
-  instance_type   = "${var.master_instance_type}"
-  ami             = "${lookup(var.aws_amis, var.aws_region)}"
-  key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.k8s-security-group.name}"]
-  tags {
-    Name = "ci-sockshop-k8s-master"
-  }
+  node_pools = [
+    {
+      name            = "node-pool"
+      machine_type    = "e2-standard-2"
+      node_locations  = "europe-west2-b,europe-west2-c"
+      min_count       = 2
+      max_count       = 5
+      disk_size_gb    = 30
+      spot            = false
+      auto_upgrade    = true
+      auto_repair     = true
+      autoscaling     = true
+      service_account = "test-165@kloia-challenge.iam.gserviceaccount.com"
+    },
+  ]
 
-  connection {
-    user = "ubuntu"
-    private_key = "${file("${var.private_key_path}")}"
-  }
 
-  provisioner "file" {
-    source = "deploy/kubernetes/manifests"
-    destination = "/tmp/"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
-      "sudo echo \"deb http://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee --append /etc/apt/sources.list.d/kubernetes.list",
-      "sudo apt-get update",
-      "sudo apt-get install -y docker.io",
-      "sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni"
+  node_pools_oauth_scopes = {
+    all = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/trace.append",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/servicecontrol",
     ]
   }
-}
 
-resource "aws_instance" "ci-sockshop-k8s-node" {
-  instance_type   = "${var.node_instance_type}"
-  count           = "${var.node_count}"
-  ami             = "${lookup(var.aws_amis, var.aws_region)}"
-  key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.k8s-security-group.name}"]
-  tags {
-    Name = "ci-sockshop-k8s-node"
+  node_pools_labels = {
+    all = {}
+
+    default-node-pool = {
+      default-node-pool = true
+    }
   }
 
-  connection {
-    user = "ubuntu"
-    private_key = "${file("${var.private_key_path}")}"
+  node_pools_metadata = {
+    all = {}
+    node-pool = {
+      shutdown-script                 = "kubectl --kubeconfig=/var/lib/kubelet/kubeconfig drain --force=true --ignore-daemonsets=true --delete-local-data \"$HOSTNAME\""
+      node-pool-metadata-custom-value = "node-pool"
+    }
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
-      "sudo echo \"deb http://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee --append /etc/apt/sources.list.d/kubernetes.list",
-      "sudo apt-get update",
-      "sudo apt-get install -y docker.io",
-      "sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni",
-      "sudo sysctl -w vm.max_map_count=262144"
+  node_pools_taints = {
+    all = []
+
+    node-pool = [
+      {
+        key    = "node-pool"
+        value  = true
+        effect = "PREFER_NO_SCHEDULE"
+      },
     ]
   }
-}
 
-resource "aws_elb" "ci-sockshop-k8s-elb" {
-  depends_on = [ "aws_instance.ci-sockshop-k8s-node" ]
-  name = "ci-sockshop-k8s-elb"
-  instances = ["${aws_instance.ci-sockshop-k8s-node.*.id}"]
-  availability_zones = ["${data.aws_availability_zones.available.names}"]
-  security_groups = ["${aws_security_group.k8s-security-group.id}"] 
-  listener {
-    lb_port = 80
-    instance_port = 30001
-    lb_protocol = "http"
-    instance_protocol = "http"
+  node_pools_tags = {
+    all = []
+    node-pool = [
+      "node-pool",
+    ]
   }
-
-  listener {
-    lb_port = 9411
-    instance_port = 30002
-    lb_protocol = "http"
-    instance_protocol = "http"
-  }
-
+  depends_on = [
+        module.gcp-network
+        ]
 }
-

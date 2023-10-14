@@ -1,50 +1,49 @@
-variable "aws_amis" {
-  description = "The AMI to use for setting up the instances."
-  default = {
-    # Ubuntu Xenial 16.04 LTS
-    "eu-west-1" = "ami-58b7972b"
-    "eu-west-2" = "ami-ede2e889"
-    "eu-central-1" = "ami-1535f57a"
-    "us-east-1" = "ami-bcd7c3ab"
-    "us-east-2" = "ami-fcc19b99"
-    "us-west-1" = "ami-ed50018d"
-    "us-west-2" = "ami-15d76075"
-  }
+### Common variables
+
+variable "project_id" {
+  type        = string
+  description = "The project ID to host the cluster in"
+  default     = "kloia-challenge"
+}
+variable "region" {
+  type        = string
+  description = "The region to host the cluster in"
+  default     = ""
+}
+variable "env_name" {
+  type        = string
+  description = "The environment for the GKE cluster"
+  default     = "dev"
 }
 
-data "aws_availability_zones" "available" {}
-
-variable "aws_region" {
-  description = "The AWS region to create things in."
-  default     = "eu-central-1"
+### Cluster variables
+variable "cluster_name" {
+  type        = string
+  description = "The name for the GKE cluster"
+  default     = ""
 }
-
-variable "instance_user" {
-  description = "The user account to use on the instances to run the scripts."
-  default     = "ubuntu"
+variable "network" {
+  type        = string
+  description = "The VPC network created to host the cluster in"
+  default     = "gke-network"
 }
-
-variable "key_name" {
-  description = "Name of the SSH keypair to use in AWS."
-  default     = "deploy-docs-k8s"
+variable "subnetwork" {
+  type        = string
+  description = "The subnetwork created to host the cluster in"
+  default     = "gke-subnet"
 }
-
-variable "master_instance_type" {
-  description = "The instance type to use for the Kubernetes master."
-  default     = "m3.large"
+variable "ip_range_pods_name" {
+  type        = string
+  description = "The secondary ip range to use for pods"
+  default     = "ip-range-pods"
 }
-
-variable "node_instance_type" {
-  description = "The instance type to use for the Kubernetes nodes."
-  default     = "m3.large"
+variable "ip_range_services_name" {
+  type        = string
+  description = "The secondary ip range to use for services"
+  default     = "ip-range-services"
 }
-
-variable "node_count" {
-  description = "The number of nodes in the cluster."
-  default     = "3"
-}
-
-variable "private_key_path" {
-  description = "The private key for connection to the instances as the user. Corresponds to the key_name variable."
-  default     = "~/.ssh/deploy-docs-k8s.pem"
+variable "zones" {
+  type        = list(string)
+  description = "The project ID to host the cluster in"
+  default     = ["europe-west2-a", "europe-west2-b"]
 }
