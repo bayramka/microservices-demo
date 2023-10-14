@@ -32,6 +32,6 @@ jobs:
           context: .
           file: deploy/kubernetes/Dockerfile
           push: true
-          tags: $(date +%s)
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
